@@ -28,7 +28,9 @@ import java.util.UUID;
 @Scope("prototype")
 @Log4j2
 public class UploadImage implements Command<String> {
-    private final GalleryService galleryService;
+    public UploadImage(GalleryService galleryService) {
+        this.galleryService = galleryService;
+    }
 
     @Value("${image.director.path}")
     private String imagesPath;
@@ -38,9 +40,9 @@ public class UploadImage implements Command<String> {
 
     private Gallery galleryEntity;
 
-    public UploadImage(GalleryService galleryService) {
-        this.galleryService = galleryService;
-    }
+    private File imageFile;
+
+    private final GalleryService galleryService;
 
     @Override
     public String execute() {
@@ -61,8 +63,8 @@ public class UploadImage implements Command<String> {
             Path path = Paths.get(String.format("%s%s", imagesPath, galleryEntity.getUUId()));
             Files.createDirectory(path);
             Path uploadPath = Path.of(path + "\\" + image.getOriginalFilename());
-            File fi = Utils.convertMultiPartToFile(image);
-            Files.copy(fi.toPath(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
+            imageFile = Utils.convertMultiPartToFile(image);
+            Files.copy(imageFile.toPath(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
             createThumbnail();
         } catch (Exception e) {
             log.error(e);
@@ -70,19 +72,25 @@ public class UploadImage implements Command<String> {
     }
 
     private void createThumbnail() {
-        try {
+        try (FileInputStream originalImageInputStream = new FileInputStream(imageFile)) {
             Path path = Paths.get(String.format("%s%s", imagesPath, galleryEntity.getUUId()));
-            Path uploadPath = Path.of(path + "\\" + "h" + image.getOriginalFilename());
-            BufferedImage imageMultiPart = ImageIO.read(new FileInputStream(Utils.convertMultiPartToFile(image)));
-            BufferedImage thumbnailImage = Scalr.resize(imageMultiPart, 400);
+            Path uploadPath = Path.of(path + "\\" + "thumbnailSmall.png");
+            BufferedImage imageMultiPart = ImageIO.read(originalImageInputStream);
+            BufferedImage thumbnailImage = Scalr.resize(imageMultiPart, Scalr.Method.AUTOMATIC, Scalr.Mode.AUTOMATIC, 400, Scalr.OP_ANTIALIAS);
 
             File thumbnailFile = new File(uploadPath.toUri());
-            System.out.println(thumbnailFile);
             ImageIO.write(thumbnailImage, "png", thumbnailFile);
             imageMultiPart.flush();
             thumbnailImage.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
+        } finally {
+            if (imageFile.delete()) {
+                log.info("Temporal Image " + image.getOriginalFilename() + " deleted");
+            } else {
+                log.info("Temporal Image " + image.getOriginalFilename() + "was not deleted");
+
+            }
         }
     }
 }
