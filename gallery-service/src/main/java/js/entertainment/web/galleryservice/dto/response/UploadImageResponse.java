@@ -1,14 +1,17 @@
 package js.entertainment.web.galleryservice.dto.response;
 
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UploadImageResponse {
-    private UUID id;
+    private Long imageid;
+    private UUID imageUuid;
     private String imageName;
 }

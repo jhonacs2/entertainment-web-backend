@@ -1,7 +1,7 @@
 package js.entertainment.web.galleryservice.service;
 
-import js.entertainment.web.galleryservice.domain.Gallery;
+import js.entertainment.web.galleryservice.domain.Image;
 
 public interface GalleryService {
-    Gallery save(Gallery gallery);
+    Image save(Image gallery);
 }

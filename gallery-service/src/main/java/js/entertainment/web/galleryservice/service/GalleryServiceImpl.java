@@ -1,6 +1,6 @@
 package js.entertainment.web.galleryservice.service;
 
-import js.entertainment.web.galleryservice.domain.Gallery;
+import js.entertainment.web.galleryservice.domain.Image;
 import js.entertainment.web.galleryservice.repository.GalleryRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public Gallery save(Gallery gallery) {
+    public Image save(Image gallery) {
         return galleryRepository.save(gallery);
     }
 }

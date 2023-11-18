@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = ConstantsTableNames.GalleryTable.Name)
-public class Gallery {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class Gallery {
     private Long id;
 
     @Column(name = ConstantsTableNames.GalleryTable.UUid.NAME)
-    private String UUId;
+    private String Uuid;
 
     @Column(
             name = ConstantsTableNames.GalleryTable.imageName.NAME,
