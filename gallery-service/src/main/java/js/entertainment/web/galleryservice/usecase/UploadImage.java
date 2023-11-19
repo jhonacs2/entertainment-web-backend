@@ -2,6 +2,7 @@ package js.entertainment.web.galleryservice.usecase;
 
 import js.entertainment.web.galleryservice.domain.Image;
 import js.entertainment.web.galleryservice.dto.response.UploadImageResponse;
+import js.entertainment.web.galleryservice.exceptions.IOExceptionException;
 import js.entertainment.web.galleryservice.service.GalleryService;
 import js.entertainment.web.galleryservice.utils.Command;
 import js.entertainment.web.galleryservice.utils.Utils;
@@ -19,7 +20,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 
@@ -27,10 +31,6 @@ import java.util.UUID;
 @Scope("prototype")
 @Log4j2
 public class UploadImage implements Command<UploadImageResponse> {
-    public UploadImage(GalleryService galleryService) {
-        this.galleryService = galleryService;
-    }
-
     @Value("${image.director.path}")
     private String imagesPath;
 
@@ -43,12 +43,17 @@ public class UploadImage implements Command<UploadImageResponse> {
 
     private final GalleryService galleryService;
 
+    public UploadImage(GalleryService galleryService) {
+        this.galleryService = galleryService;
+    }
+
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public UploadImageResponse execute() throws IOException {
+    public UploadImageResponse execute() {
         galleryEntity = galleryService.save(buildGallery());
         createFolder();
         return buildUploadImageResponse();
+
     }
 
     private Image buildGallery() {
@@ -61,13 +66,13 @@ public class UploadImage implements Command<UploadImageResponse> {
     private UploadImageResponse buildUploadImageResponse() {
         return UploadImageResponse
                 .builder()
-                .imageid(galleryEntity.getId())
+                .imageId(galleryEntity.getId())
                 .imageName(galleryEntity.getImageName())
                 .imageUuid(UUID.fromString(galleryEntity.getUuid()))
                 .build();
     }
 
-    private void createFolder() throws IOException {
+    private void createFolder() {
         try {
             Path path = Paths.get(String.format("%s%s", imagesPath, galleryEntity.getUuid()));
             Files.createDirectory(path);
@@ -75,18 +80,9 @@ public class UploadImage implements Command<UploadImageResponse> {
             imageFile = Utils.convertMultiPartToFile(image);
             Files.copy(imageFile.toPath(), uploadPath, StandardCopyOption.REPLACE_EXISTING);
             createThumbnail();
-        } catch (FileAlreadyExistsException e) {
-            log.error(e);
-            throw e;
-        } catch (AccessDeniedException e) {
-            log.error(e);
-            throw e;
         } catch (IOException e) {
-            log.error(e);
-            throw e;
-        } catch (Exception e) {
-            log.error(e);
-            throw e;
+            log.error("ERROR CREATING FOLDER", e);
+            throw new IOExceptionException(e.getMessage());
         }
     }
 

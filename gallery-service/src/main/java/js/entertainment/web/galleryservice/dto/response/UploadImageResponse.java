@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UploadImageResponse {
-    private Long imageid;
+    private Long imageId;
     private UUID imageUuid;
     private String imageName;
 }

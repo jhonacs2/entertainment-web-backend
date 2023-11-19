@@ -4,4 +4,6 @@ import js.entertainment.web.galleryservice.domain.Image;
 
 public interface GalleryService {
     Image save(Image gallery);
+
+    Image findById(Long id);
 }
