@@ -1,16 +1,16 @@
 package js.entertainment.web.galleryservice.service;
 
 import js.entertainment.web.galleryservice.domain.Image;
-import js.entertainment.web.galleryservice.repository.GalleryRepository;
+import js.entertainment.web.galleryservice.repository.ImageRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 
 @Service
-public class GalleryServiceImpl implements GalleryService {
-    private final GalleryRepository galleryRepository;
+public class GalleryServiceImpl implements ImageService {
+    private final ImageRepository galleryRepository;
 
-    public GalleryServiceImpl(GalleryRepository galleryRepository) {
+    public GalleryServiceImpl(ImageRepository galleryRepository) {
         this.galleryRepository = galleryRepository;
     }
 

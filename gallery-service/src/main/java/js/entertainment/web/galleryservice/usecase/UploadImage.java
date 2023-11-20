@@ -1,9 +1,10 @@
 package js.entertainment.web.galleryservice.usecase;
 
+import js.entertainment.web.galleryservice.common.ThumbnailSize;
 import js.entertainment.web.galleryservice.domain.Image;
 import js.entertainment.web.galleryservice.dto.response.UploadImageResponse;
 import js.entertainment.web.galleryservice.exceptions.IOExceptionException;
-import js.entertainment.web.galleryservice.service.GalleryService;
+import js.entertainment.web.galleryservice.service.ImageService;
 import js.entertainment.web.galleryservice.utils.Command;
 import js.entertainment.web.galleryservice.utils.Utils;
 import lombok.Setter;
@@ -41,9 +42,9 @@ public class UploadImage implements Command<UploadImageResponse> {
 
     private File imageFile;
 
-    private final GalleryService galleryService;
+    private final ImageService galleryService;
 
-    public UploadImage(GalleryService galleryService) {
+    public UploadImage(ImageService galleryService) {
         this.galleryService = galleryService;
     }
 
@@ -89,7 +90,7 @@ public class UploadImage implements Command<UploadImageResponse> {
     private void createThumbnail() throws IOException {
         try (FileInputStream originalImageInputStream = new FileInputStream(imageFile)) {
             Path path = Paths.get(String.format("%s%s", imagesPath, galleryEntity.getUuid()));
-            Path uploadPath = Path.of(path + "\\" + "thumbnailSmall.png");
+            Path uploadPath = Path.of(path + "\\" + ThumbnailSize.THUMBNAIL_SMALL + ".png");
             BufferedImage imageMultiPart = ImageIO.read(originalImageInputStream);
             BufferedImage thumbnailImage = Scalr.resize(imageMultiPart, Scalr.Method.AUTOMATIC, Scalr.Mode.AUTOMATIC, 400, Scalr.OP_ANTIALIAS);
 
