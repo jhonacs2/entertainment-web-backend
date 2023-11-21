@@ -34,3 +34,5 @@ build/
 
 ./eureka/.mvn
 ./gallery-service/.mvn
+./movie-service/.mvn/
+./security-service/.mvn/
