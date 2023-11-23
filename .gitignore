@@ -36,3 +36,5 @@ build/
 ./gallery-service/.mvn
 ./movie-service/.mvn/
 ./security-service/.mvn/
+/movie-service/.mvn/wrapper/maven-wrapper.jar
+/security-service/.mvn/wrapper/maven-wrapper.jar
