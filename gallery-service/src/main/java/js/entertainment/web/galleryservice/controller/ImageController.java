@@ -1,5 +1,6 @@
 package js.entertainment.web.galleryservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import js.entertainment.web.galleryservice.dto.response.UploadImageResponse;
 import js.entertainment.web.galleryservice.usecase.GetImage;
 import js.entertainment.web.galleryservice.usecase.UploadImage;
@@ -20,12 +21,14 @@ public class ImageController {
         this.getImageThumbnail = getImage;
     }
 
-    @PostMapping(value = "/v1/gallery/upload")
+    @Operation(summary = "Upload Image")
+    @PostMapping(value = "/v1/gallery/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UploadImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
         uploadImage.setImage(file);
         return ResponseEntity.ok(uploadImage.execute());
     }
 
+    @Operation(summary = "Get Image Thumbnail by imageId")
     @GetMapping(value = "/v1/gallery/{imageId}/thumbnail")
     public ResponseEntity<Resource> getImage(@PathVariable("imageId") Long imageId) {
         getImageThumbnail.setImageId(imageId);
