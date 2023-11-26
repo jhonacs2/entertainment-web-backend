@@ -1,4 +1,4 @@
-package js.entertainment.web.galleryservice.utils;
+package js.entertainment.web.movie.utils;
 
 public interface Command<T> {
     T execute();
