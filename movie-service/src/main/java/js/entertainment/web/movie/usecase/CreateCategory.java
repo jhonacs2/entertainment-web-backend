@@ -3,11 +3,14 @@ package js.entertainment.web.movie.usecase;
 import js.entertainment.web.movie.domain.Category;
 import js.entertainment.web.movie.dto.request.CategoryRequest;
 import js.entertainment.web.movie.dto.response.CategoryResponse;
+import js.entertainment.web.movie.exceptions.DuplicateEntryException;
 import js.entertainment.web.movie.service.CategoryService;
 import js.entertainment.web.movie.utils.Command;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,8 +28,13 @@ public class CreateCategory implements Command<CategoryResponse> {
 
     @Override
     public CategoryResponse execute() {
-        var category = categoryService.save(buildCategory());
-        return buildCategoryResponse(category);
+        try {
+            var category = categoryService.save(buildCategory());
+            return buildCategoryResponse(category);
+        } catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage());
+            throw new DuplicateEntryException("Duplicate Entry Movie", HttpStatus.CONFLICT);
+        }
     }
 
     private Category buildCategory() {

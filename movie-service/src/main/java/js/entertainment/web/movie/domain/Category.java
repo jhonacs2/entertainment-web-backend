@@ -22,5 +22,6 @@ public class Category {
             length = 20,
             unique = true
     )
+
     private String category;
 }
