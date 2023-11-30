@@ -6,4 +6,6 @@ public interface CategoryService {
     Category save(Category category);
 
     void deleteById(Long id);
+
+    Category findById(Long id);
 }

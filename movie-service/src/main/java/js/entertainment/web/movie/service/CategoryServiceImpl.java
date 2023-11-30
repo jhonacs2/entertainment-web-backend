@@ -4,6 +4,8 @@ import js.entertainment.web.movie.domain.Category;
 import js.entertainment.web.movie.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -20,5 +22,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteById(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found"));
     }
 }

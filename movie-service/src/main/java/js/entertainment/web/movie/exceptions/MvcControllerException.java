@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,5 +38,15 @@ public class MvcControllerException {
         errorBody.put("message", "Duplicate Entry Movie");
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e) {
+        Map<String, Object> errorBody = new LinkedHashMap<>();
+        errorBody.put("timestamp", LocalDateTime.now());
+        errorBody.put("status", HttpStatus.NOT_FOUND.value());
+        errorBody.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
+        errorBody.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
     }
 }
