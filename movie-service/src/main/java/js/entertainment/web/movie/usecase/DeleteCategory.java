@@ -22,6 +22,9 @@ public class DeleteCategory {
         } catch (EntityNotFoundException e) {
             log.error(e);
             throw e;
+        } catch (Exception e) {
+            log.error(e);
+            throw e;
         }
     }
 }
