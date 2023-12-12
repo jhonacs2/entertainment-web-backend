@@ -19,7 +19,8 @@ public class Classification {
     @Column(
             name = "classification",
             length = 20,
-            nullable = false
+            nullable = false,
+            unique = true
     )
     private String classification;
 }
